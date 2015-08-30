@@ -13,9 +13,12 @@ Including another URLconf
     1. Add an import:  from blog import urls as blog_urls
     2. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
-from django.conf.urls import include, url
+from django.conf.urls import url
 
 urlpatterns = [
     url(r'^$', 'google_scholar_dual_cite.core.views.home', name='home'),
-    url(r'^api/articles', 'google_scholar_dual_cite.core.views.articles_by_query_api', name='articles_by_query_api'),
+    url(r'^api/articles', 'google_scholar_dual_cite.core.views.articles_by_query_api',
+        name='articles_by_query_api'),
+    url(r'^api/cites', 'google_scholar_dual_cite.core.views.cites_api',
+        name='cites_api'),
 ]
