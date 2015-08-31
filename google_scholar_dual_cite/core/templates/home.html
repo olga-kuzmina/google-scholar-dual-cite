@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  {% load staticfiles %}
+  <link rel="stylesheet" href="{% static "bootstrap/css/bootstrap.css" %}"/>
+  <title>Google scholar</title>
+</head>
+<body>
+  <div class="container">
+    <div class="well bs-component">
+
+      <form id="firstArticleForm" class="form-horizontal" action="" method="post">
+        <fieldset>
+          <legend>Articles</legend>
+          <div class="form-group">
+            <label class="control-label">Article №1</label>
+            <div class="input-group">
+              <input type="text" class="form-control" id="firstArticleInput">
+              <span class="input-group-btn">
+                <button class="btn btn-primary" type="button">Submit</button>
+              </span>
+            </div>
+            <div class="well well-lg">
+              Look, I'm in a large well!
+            </div>
+          </div>
+        </fieldset>
+      </form>
+
+      <form id="secondArticleForm" class="form-horizontal" action="" method="post">
+        <fieldset>
+          <div class="form-group">
+            <label class="control-label">Article №2</label>
+            <div class="input-group">
+              <input type="text" class="form-control" id="secondArticleInput">
+              <span class="input-group-btn">
+                <button class="btn btn-primary" type="button">Submit</button>
+              </span>
+            </div>
+            <div class="well well-lg">
+              Look, I'm in a large well!
+            </div>
+          </div>
+        </fieldset>
+      </form>
+
+    </div>
+  </div>
+</body>
+</html>

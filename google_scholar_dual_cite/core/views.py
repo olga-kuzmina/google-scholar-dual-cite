@@ -1,16 +1,12 @@
-from django.shortcuts import render
-from django.http.response import HttpResponse, JsonResponse, HttpResponseBadRequest
+from django.shortcuts import render_to_response
+from django.http.response import JsonResponse, HttpResponseBadRequest
 from google_scholar_dual_cite.core.scholar_x import CitesScholarQuery
 from scholar import SearchScholarQuery, ScholarQuerier
-
-# Create your views here.
 
 
 def home(request):
     if request.method == 'GET':
-        return HttpResponse('<html>get</html>')
-    elif request.method == 'POST':
-        return
+        return render_to_response('home.html')
 
 
 def articles_by_query_api(request):
