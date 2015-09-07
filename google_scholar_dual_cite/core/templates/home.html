@@ -4,42 +4,75 @@
   <meta charset="UTF-8">
   {% load staticfiles %}
   <link rel="stylesheet" href="{% static "bootstrap/css/bootstrap.css" %}"/>
+  <script type="text/javascript" src="{% static "js/jsonQ.min.js"%}"></script>
+  <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+  <script>
+    $(document).ready(function(){
+      $("#firstArticleForm").submit(function() {
+        submitForm = $(this);
+        $.ajax({
+          type: $(this).attr('method'),
+          url: $(this).attr('action'),
+          data: $(this).serialize(),
+          success: formAjaxSuccess,
+			  });
+      return false;
+      });
+      $("#secondArticleForm").submit(function() {
+        submitForm = $(this);
+        $.ajax({
+          type: $(this).attr('method'),
+          url: $(this).attr('action'),
+          data: $(this).serialize(),
+          success: formAjaxSuccess,
+			  });
+      return false;
+      });
+      function formAjaxSuccess(response){
+        var article=jsonQ(response);
+        var title = article.find("title").value();
+        var url = article.find("url").value();
+        var excerpt = article.find("excerpt").value();
+        articleDiv = submitForm.find('.articleTitle');
+        articleDiv.html('<a href="' + url + '">' + title + '</a></br>');
+        articleDiv.append(excerpt);
+      };
+    });
+  </script>
   <title>Google scholar</title>
 </head>
 <body>
   <div class="container">
     <div class="well bs-component">
 
-      <form id="firstArticleForm" class="form-horizontal" action="" method="post">
+        <form id="firstArticleForm" class="form-horizontal" method="GET" action="api/articles">
         <fieldset>
           <legend>Articles</legend>
           <div class="form-group">
             <label class="control-label">Article №1</label>
             <div class="input-group">
-              <input type="text" class="form-control" id="firstArticleInput">
+              <input type="text" class="form-control" id="firstArticleInput", name="phrase">
               <span class="input-group-btn">
-                <button class="btn btn-primary" type="button">Submit</button>
+                <button class="btn btn-primary" type="submit">Submit</button>
               </span>
             </div>
-            <div class="well well-lg">
-              Look, I'm in a large well!
+            <div class="well well-lg articleTitle">
             </div>
           </div>
         </fieldset>
       </form>
 
-      <form id="secondArticleForm" class="form-horizontal" action="" method="post">
+      <form id="secondArticleForm" class="form-horizontal" method="GET" action="api/articles">
         <fieldset>
           <div class="form-group">
             <label class="control-label">Article №2</label>
             <div class="input-group">
-              <input type="text" class="form-control" id="secondArticleInput">
+              <input type="text" class="form-control" id="secondArticleInput", name="phrase">
               <span class="input-group-btn">
-                <button class="btn btn-primary" type="button">Submit</button>
+                <button class="btn btn-primary" type="submits">Submit</button>
               </span>
             </div>
-            <div class="well well-lg">
-              Look, I'm in a large well!
+            <div class="well well-lg articleTitle">
             </div>
           </div>
         </fieldset>

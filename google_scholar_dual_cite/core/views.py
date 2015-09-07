@@ -22,11 +22,12 @@ def articles_by_query_api(request):
         articles = querier.articles
 
         if not articles:
-            result = {'articles:'[{'title': '', id: 0, 'url': ''}]}
+            result = {'articles': [{'title': '', 'id': 0, 'url': '', 'excerpt': ''}]}
         else:
             result = {'articles': [{'title': articles[0]['title'],
                                     'id': articles[0]['cluster_id'],
-                                    'url': articles[0]['url']}]}
+                                    'url': articles[0]['url'],
+                                    'excerpt': articles[0]['excerpt']}]}
         return JsonResponse(result)
     else:
         return HttpResponseBadRequest()
