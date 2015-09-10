@@ -9,7 +9,7 @@ def home(request):
         return render_to_response('home.html')
 
 
-def articles_by_query_api(request):
+def papers_by_query_api(request):
     if request.method == 'GET':
         phrase = request.GET.get('phrase', '')
         if not phrase:
@@ -19,15 +19,15 @@ def articles_by_query_api(request):
         query.set_phrase(phrase)
         querier = ScholarQuerier()
         querier.send_query(query)
-        articles = querier.articles
+        papers = querier.articles
 
-        if not articles:
-            result = {'articles': [{'title': '', 'id': 0, 'url': '', 'excerpt': ''}]}
+        if not papers:
+            result = {'papers': [{'title': '', 'id': 0, 'url': '', 'excerpt': ''}]}
         else:
-            result = {'articles': [{'title': articles[0]['title'],
-                                    'id': articles[0]['cluster_id'],
-                                    'url': articles[0]['url'],
-                                    'excerpt': articles[0]['excerpt']}]}
+            result = {'papers': [{'title': papers[0]['title'],
+                                    'id': papers[0]['cluster_id'],
+                                    'url': papers[0]['url'],
+                                    'excerpt': papers[0]['excerpt']}]}
         return JsonResponse(result)
     else:
         return HttpResponseBadRequest()
@@ -35,21 +35,21 @@ def articles_by_query_api(request):
 
 def cites_api(request):
     if request.method == 'GET':
-        article_id = request.GET.get('article_id', 0)
+        paper_id = request.GET.get('paper_id', 0)
         page = request.GET.get('page', None)
-        if not article_id or page is None:
+        if not paper_id or page is None:
             return HttpResponseBadRequest()
 
-        query = CitesScholarQuery(article_id, page)
+        query = CitesScholarQuery(paper_id, page)
         querier = ScholarQuerier()
         querier.send_query(query)
-        articles = querier.articles
+        papers = querier.papers
 
         cites = []
-        for article in articles:
-            cites.append({'title': article['title'],
-                          'id': article['cluster_id'],
-                          'url': article['url']})
+        for paper in papers:
+            cites.append({'title': paper['title'],
+                          'id': paper['cluster_id'],
+                          'url': paper['url']})
 
         return JsonResponse({'cites': cites})
     else:

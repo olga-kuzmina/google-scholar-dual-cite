@@ -8,7 +8,7 @@
   <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
   <script>
     $(document).ready(function(){
-      $("#firstArticleForm").submit(function() {
+      $("#firstPaperForm").submit(function() {
         submitForm = $(this);
         $.ajax({
           type: $(this).attr('method'),
@@ -18,7 +18,7 @@
 			  });
       return false;
       });
-      $("#secondArticleForm").submit(function() {
+      $("#secondPaperForm").submit(function() {
         submitForm = $(this);
         $.ajax({
           type: $(this).attr('method'),
@@ -29,13 +29,13 @@
       return false;
       });
       function formAjaxSuccess(response){
-        var article=jsonQ(response);
-        var title = article.find("title").value();
-        var url = article.find("url").value();
-        var excerpt = article.find("excerpt").value();
-        articleDiv = submitForm.find('.articleTitle');
-        articleDiv.html('<a href="' + url + '">' + title + '</a></br>');
-        articleDiv.append(excerpt);
+        var paper=jsonQ(response);
+        var title = paper.find("title").value();
+        var url = paper.find("url").value();
+        var excerpt = paper.find("excerpt").value();
+        paperDiv = submitForm.find('.paperTitle');
+        paperDiv.html('<a href="' + url + '">' + title + '</a></br>');
+        paperDiv.append(excerpt);
       };
     });
   </script>
@@ -45,34 +45,34 @@
   <div class="container">
     <div class="well bs-component">
 
-        <form id="firstArticleForm" class="form-horizontal" method="GET" action="api/articles">
+        <form id="firstPaperForm" class="form-horizontal" method="GET" action="api/papers">
         <fieldset>
-          <legend>Articles</legend>
+          <legend>Papers</legend>
           <div class="form-group">
-            <label class="control-label">Article №1</label>
+            <label class="control-label">Paper №1</label>
             <div class="input-group">
-              <input type="text" class="form-control" id="firstArticleInput", name="phrase">
+              <input type="text" class="form-control" id="firstPaperInput", name="phrase">
               <span class="input-group-btn">
                 <button class="btn btn-primary" type="submit">Submit</button>
               </span>
             </div>
-            <div class="well well-lg articleTitle">
+            <div class="well well-lg paperTitle">
             </div>
           </div>
         </fieldset>
       </form>
 
-      <form id="secondArticleForm" class="form-horizontal" method="GET" action="api/articles">
+      <form id="secondPaperForm" class="form-horizontal" method="GET" action="api/papers">
         <fieldset>
           <div class="form-group">
-            <label class="control-label">Article №2</label>
+            <label class="control-label">Paper №2</label>
             <div class="input-group">
-              <input type="text" class="form-control" id="secondArticleInput", name="phrase">
+              <input type="text" class="form-control" id="secondPaperInput", name="phrase">
               <span class="input-group-btn">
                 <button class="btn btn-primary" type="submits">Submit</button>
               </span>
             </div>
-            <div class="well well-lg articleTitle">
+            <div class="well well-lg paperTitle">
             </div>
           </div>
         </fieldset>

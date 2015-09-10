@@ -4,7 +4,7 @@ from urllib import quote
 
 class CitesScholarQuery(ScholarQuery):
     """
-    Query for article's cites
+    Query for paper's cites
     """
     SCHOLAR_CLUSTER_URL = ScholarConf.SCHOLAR_SITE + '/scholar?' \
         + 'cites=%(cluster)s' \

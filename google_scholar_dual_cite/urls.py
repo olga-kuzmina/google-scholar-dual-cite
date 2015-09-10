@@ -17,8 +17,8 @@ from django.conf.urls import url
 
 urlpatterns = [
     url(r'^$', 'google_scholar_dual_cite.core.views.home', name='home'),
-    url(r'^api/articles', 'google_scholar_dual_cite.core.views.articles_by_query_api',
-        name='articles_by_query_api'),
+    url(r'^api/papers', 'google_scholar_dual_cite.core.views.papers_by_query_api',
+        name='papers_by_query_api'),
     url(r'^api/cites', 'google_scholar_dual_cite.core.views.cites_api',
         name='cites_api'),
 ]
