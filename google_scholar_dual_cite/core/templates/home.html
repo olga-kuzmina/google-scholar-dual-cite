@@ -6,7 +6,93 @@
   <link rel="stylesheet" href="{% static "bootstrap/css/bootstrap.css" %}"/>
   <script type="text/javascript" src="{% static "js/jsonQ.min.js"%}"></script>
   <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
-  <script>
+  <script type="text/javascript">
+
+    function getCites(){
+      /* To pretend a human being, wait several seconds */
+      if (PAPER_SECOND_EXHAUSTED){
+        setTimeout('citesAjax(' + '1' + ')', 10000);
+      } else{
+        if (PAPER_FIRST_EXHAUSTED){
+          setTimeout('citesAjax(' + '2' + ')', 10000);
+        }
+      }
+
+      setTimeout('citesAjax(' + '1' + ')', 10000);
+		  setTimeout('citesAjax(' + '2' + ')', 20000);
+    };
+
+    function citesAjax(paper_num){
+      if (paper_num == 1){
+        page = PAPER_FIRST_PAGE;
+        paper_id = PAPER_FIRST_ID;
+      }else{
+        page = PAPER_SECOND_PAGE;
+        paper_id = PAPER_SECOND_ID;
+      };
+      $.ajax({
+        type: 'GET',
+        url: 'api/cites',
+        data: {'page': page, 'paper_id': paper_id},
+        success: loadCites,
+      });
+		};
+
+    function search_intersections(){
+      console.log("search_intersections");
+		  var paper_first_keys = Object.keys(PAPER_FIRST_CITES);
+		  var paper_second_keys = Object.keys(PAPER_SECOND_CITES);
+		  var intersectionsDiv = $("#intersectionsDiv");
+		  paper_first_keys.filter(function(n) {
+        if ((paper_second_keys.indexOf(n) != -1) && (INTERSECTIONS.indexOf(n) == -1)){
+          INTERSECTIONS.push(n);
+          var title = PAPER_FIRST_CITES[n]["title"];
+          var url = PAPER_FIRST_CITES[n]["url"];
+          intersectionsDiv.append('<a href="' + url + '">' + title + '</a></br>');
+        };
+      });
+      if ((PAPER_FIRST_PAGE == PAPER_SECOND_PAGE) || PAPER_SECOND_EXHAUSTED || PAPER_FIRST_EXHAUSTED){
+        getCites();
+      };
+    };
+
+    function loadCites(response){
+      var result=jsonQ(response);
+      RESULT = result;
+      var cites = result.find("cites").value()[0];
+      var paper_id = result.find("paper_id").value()[0];
+      var citesLength = cites.length;
+
+      if (paper_id==PAPER_FIRST_ID){
+        var first_paper = true;
+        PAPER_FIRST_PAGE = PAPER_FIRST_PAGE + 1;
+      } else{
+        var first_paper = false;
+        PAPER_SECOND_PAGE = PAPER_SECOND_PAGE + 1;
+      }
+
+      if (citesLength == 0){
+        if (first_paper){
+          PAPER_FIRST_EXHAUSTED = true;
+        }else{
+          PAPER_SECOND_EXHAUSTED = true;s
+        };
+        return 0;
+      };
+
+      for (var i = 0; i < citesLength; i++) {
+        var cite = cites[i];
+        var cite_id = cite['id'];
+        var cite_info = {'url': cite['url'], 'title': cite['title']};
+        if (first_paper){
+          PAPER_FIRST_CITES[cite_id] = cite_info;
+        } else{
+          PAPER_SECOND_CITES[cite_id] = cite_info;
+        }
+      }
+      search_intersections();
+    };
+
     $(document).ready(function(){
       $("#firstPaperForm").submit(function() {
         submitForm = $(this);
@@ -29,13 +115,26 @@
       return false;
       });
       function formAjaxSuccess(response){
+        PAPER_FIRST_PAGE = 0;
+        PAPER_SECOND_PAGE = 0;
+        PAPER_FIRST_CITES = {};
+        PAPER_SECOND_CITES = {};
+        PAPER_FIRST_EXHAUSTED = false;
+        PAPER_SECOND_EXHAUSTED = false;
+        INTERSECTIONS = [];
         var paper=jsonQ(response);
         var title = paper.find("title").value();
         var url = paper.find("url").value();
         var excerpt = paper.find("excerpt").value();
+        var id = paper.find("id").value()[0]; // value() returns list of all found ids
         paperDiv = submitForm.find('.paperTitle');
         paperDiv.html('<a href="' + url + '">' + title + '</a></br>');
         paperDiv.append(excerpt);
+        if (submitForm.attr('id') == 'firstPaperForm'){
+          PAPER_FIRST_ID = id;
+        } else{
+          PAPER_SECOND_ID = id;
+        }
       };
     });
   </script>
@@ -79,21 +178,18 @@
       </form>
 
     </div>
-    <form class="form-horizontal">
     <div class="form-group">
       <div class="col-lg-10">
-        <button type="submit" class="btn btn-success btn-lg btn-block">Find!</button>
+        <button class="btn btn-success btn-lg btn-block" onclick="getCites">Find!</button>
       </div>
     </div>
 
     <div class="form-group">
       <div class="col-lg-10">
-        <select multiple="" class="form-control">
-          <option>1</option>
-        </select>
+        <div id="intersectionsDiv" class="well well-lg">
+        </div>
       </div>
     </div>
-  </form>
   </div>
 </body>
 </html>
