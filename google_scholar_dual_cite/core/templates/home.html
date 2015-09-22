@@ -7,91 +7,95 @@
   <script type="text/javascript" src="{% static "js/jsonQ.min.js"%}"></script>
   <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
   <script type="text/javascript">
-
+    var G_SCHOLAR = {};
     function getCites(){
       /* To pretend a human being, wait several seconds */
-      if (PAPER_SECOND_EXHAUSTED){
-        setTimeout('citesAjax(' + '1' + ')', 10000);
+      if (G_SCHOLAR.PAPER_SECOND_EXHAUSTED){
+        setTimeout('citesAjax(' + '1' + ')', 5000);
+        return;
       } else{
-        if (PAPER_FIRST_EXHAUSTED){
-          setTimeout('citesAjax(' + '2' + ')', 10000);
+        if (G_SCHOLAR.PAPER_FIRST_EXHAUSTED){
+          setTimeout('citesAjax(' + '2' + ')', 5000);
+          return;
         }
       }
 
-      setTimeout('citesAjax(' + '1' + ')', 10000);
-		  setTimeout('citesAjax(' + '2' + ')', 20000);
-    };
+      setTimeout('citesAjax(' + '1' + ')', 5000);
+		  setTimeout('citesAjax(' + '2' + ')', 10000);
+    }
 
     function citesAjax(paper_num){
       if (paper_num == 1){
-        page = PAPER_FIRST_PAGE;
-        paper_id = PAPER_FIRST_ID;
+        page = G_SCHOLAR.PAPER_FIRST_PAGE;
+        paper_id = G_SCHOLAR.PAPER_FIRST_ID;
       }else{
-        page = PAPER_SECOND_PAGE;
-        paper_id = PAPER_SECOND_ID;
-      };
+        page = G_SCHOLAR.PAPER_SECOND_PAGE;
+        paper_id = G_SCHOLAR.PAPER_SECOND_ID;
+      }
       $.ajax({
         type: 'GET',
         url: 'api/cites',
         data: {'page': page, 'paper_id': paper_id},
         success: loadCites,
       });
-		};
+		}
 
     function search_intersections(){
       console.log("search_intersections");
-		  var paper_first_keys = Object.keys(PAPER_FIRST_CITES);
-		  var paper_second_keys = Object.keys(PAPER_SECOND_CITES);
+		  var paper_first_keys = Object.keys(G_SCHOLAR.PAPER_FIRST_CITES);
+		  var paper_second_keys = Object.keys(G_SCHOLAR.PAPER_SECOND_CITES);
 		  var intersectionsDiv = $("#intersectionsDiv");
 		  paper_first_keys.filter(function(n) {
-        if ((paper_second_keys.indexOf(n) != -1) && (INTERSECTIONS.indexOf(n) == -1)){
-          INTERSECTIONS.push(n);
-          var title = PAPER_FIRST_CITES[n]["title"];
-          var url = PAPER_FIRST_CITES[n]["url"];
+        if ((paper_second_keys.indexOf(n) != -1) && (G_SCHOLAR.INTERSECTIONS.indexOf(n) == -1)){
+          G_SCHOLAR.INTERSECTIONS.push(n);
+          var title = G_SCHOLAR.PAPER_FIRST_CITES[n]["title"];
+          var url = G_SCHOLAR.PAPER_FIRST_CITES[n]["url"];
           intersectionsDiv.append('<a href="' + url + '">' + title + '</a></br>');
-        };
+        }
       });
-      if ((PAPER_FIRST_PAGE == PAPER_SECOND_PAGE) || PAPER_SECOND_EXHAUSTED || PAPER_FIRST_EXHAUSTED){
+      if ((G_SCHOLAR.PAPER_FIRST_PAGE == G_SCHOLAR.PAPER_SECOND_PAGE) ||
+           G_SCHOLAR.PAPER_SECOND_EXHAUSTED || G_SCHOLAR.PAPER_FIRST_EXHAUSTED){
         getCites();
-      };
-    };
+      }
+    }
 
     function loadCites(response){
       var result=jsonQ(response);
-      RESULT = result;
+      G_SCHOLAR.RESULT = result;
       var cites = result.find("cites").value()[0];
       var paper_id = result.find("paper_id").value()[0];
       var citesLength = cites.length;
+      var first_paper;
 
-      if (paper_id==PAPER_FIRST_ID){
-        var first_paper = true;
-        PAPER_FIRST_PAGE = PAPER_FIRST_PAGE + 1;
+      if (paper_id==G_SCHOLAR.PAPER_FIRST_ID){
+        first_paper = true;
+        G_SCHOLAR.PAPER_FIRST_PAGE = G_SCHOLAR.PAPER_FIRST_PAGE + 1;
       } else{
-        var first_paper = false;
-        PAPER_SECOND_PAGE = PAPER_SECOND_PAGE + 1;
+        first_paper = false;
+        G_SCHOLAR.PAPER_SECOND_PAGE = G_SCHOLAR.PAPER_SECOND_PAGE + 1;
       }
 
-      if (citesLength == 0){
+      if (citesLength === 0){
         if (first_paper){
-          PAPER_FIRST_EXHAUSTED = true;
+          G_SCHOLAR.PAPER_FIRST_EXHAUSTED = true;
         }else{
-          PAPER_SECOND_EXHAUSTED = true;
-        };
-        return 0;
-      };
+          G_SCHOLAR.PAPER_SECOND_EXHAUSTED = true;
+        }
+        return;
+      }
 
       for (var i = 0; i < citesLength; i++) {
         var cite = cites[i];
         var cite_id = cite['id'];
         var cite_info = {'url': cite['url'], 'title': cite['title']};
         if (first_paper){
-          PAPER_FIRST_CITES[cite_id] = cite_info;
+          G_SCHOLAR.PAPER_FIRST_CITES[cite_id] = cite_info;
         } else{
-          PAPER_SECOND_CITES[cite_id] = cite_info;
+          G_SCHOLAR.PAPER_SECOND_CITES[cite_id] = cite_info;
         }
       }
       search_intersections();
-    };
+    }
 
     $(document).ready(function(){
       $("#firstPaperForm").submit(function() {
@@ -115,13 +119,13 @@
       return false;
       });
       function formAjaxSuccess(response){
-        PAPER_FIRST_PAGE = 0;
-        PAPER_SECOND_PAGE = 0;
-        PAPER_FIRST_CITES = {};
-        PAPER_SECOND_CITES = {};
-        PAPER_FIRST_EXHAUSTED = false;
-        PAPER_SECOND_EXHAUSTED = false;
-        INTERSECTIONS = [];
+        G_SCHOLAR.PAPER_FIRST_PAGE = 0;
+        G_SCHOLAR.PAPER_SECOND_PAGE = 0;
+        G_SCHOLAR.PAPER_FIRST_CITES = {};
+        G_SCHOLAR.PAPER_SECOND_CITES = {};
+        G_SCHOLAR.PAPER_FIRST_EXHAUSTED = false;
+        G_SCHOLAR.PAPER_SECOND_EXHAUSTED = false;
+        G_SCHOLAR.INTERSECTIONS = [];
         var paper=jsonQ(response);
         var title = paper.find("title").value();
         var url = paper.find("url").value();
@@ -131,11 +135,15 @@
         paperDiv.html('<a href="' + url + '">' + title + '</a></br>');
         paperDiv.append(excerpt);
         if (submitForm.attr('id') == 'firstPaperForm'){
-          PAPER_FIRST_ID = id;
+          G_SCHOLAR.PAPER_FIRST_ID = id;
         } else{
-          PAPER_SECOND_ID = id;
+          G_SCHOLAR.PAPER_SECOND_ID = id;
         }
-      };
+
+        // Clear intersections info
+        var intersectionsDiv = $("#intersectionsDiv");
+        intersectionsDiv.html('');
+      }
     });
   </script>
   <title>Google scholar</title>

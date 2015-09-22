@@ -47,6 +47,8 @@ def cites_api(request):
 
         cites = []
         for paper in papers:
+            if not paper['cluster_id']:
+                continue
             cites.append({'title': paper['title'],
                           'id': paper['cluster_id'],
                           'url': paper['url']})
