@@ -94,6 +94,9 @@
           G_SCHOLAR.PAPER_FIRST_EXHAUSTED = true;
         }else{
           G_SCHOLAR.PAPER_SECOND_EXHAUSTED = true;
+          if (!G_SCHOLAR.PAPER_FIRST_EXHAUSTED){
+            getCites();
+          }
         }
         if (G_SCHOLAR.PAPER_FIRST_EXHAUSTED && G_SCHOLAR.PAPER_SECOND_EXHAUSTED){
           disableFindBtnLoading();
