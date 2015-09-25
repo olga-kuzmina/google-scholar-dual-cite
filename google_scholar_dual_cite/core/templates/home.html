@@ -59,12 +59,14 @@
 		  var paper_first_keys = Object.keys(G_SCHOLAR.PAPER_FIRST_CITES);
 		  var paper_second_keys = Object.keys(G_SCHOLAR.PAPER_SECOND_CITES);
 		  var intersectionsDiv = $("#intersectionsDiv");
+		  var resultCountSpan = $("#resultCountSpan");
 		  paper_first_keys.filter(function(n) {
         if ((paper_second_keys.indexOf(n) != -1) && (G_SCHOLAR.INTERSECTIONS.indexOf(n) == -1)){
           G_SCHOLAR.INTERSECTIONS.push(n);
           var title = G_SCHOLAR.PAPER_FIRST_CITES[n]["title"];
           var url = G_SCHOLAR.PAPER_FIRST_CITES[n]["url"];
-          intersectionsDiv.append('<a href="' + url + '">' + title + '</a></br>');
+          intersectionsDiv.append('<p><a href="' + url + '">' + title + '</a></p>');
+          resultCountSpan.html('('+ G_SCHOLAR.INTERSECTIONS.length +')');
         }
       });
       if ((G_SCHOLAR.PAPER_FIRST_PAGE == G_SCHOLAR.PAPER_SECOND_PAGE) ||
@@ -207,7 +209,7 @@
         </div>
 
         <div class="form-group">
-          <div class="col-lg-10">
+          <div class="col-lg-13">
             <button id="findBtn" class="btn btn-success btn-lg btn-block" onclick="findBntClick()">Find!</button>
           </div>
         </div>
@@ -216,9 +218,9 @@
 
       <div class="col-lg-6">
         <div class="form-group">
-          <legend>Results</legend>
+          <legend>Results <span id="resultCountSpan" class="grey-span">(0)</span></legend>
           <div class="col-lg-10">
-            <div id="intersectionsDiv" class="well well-lg"></div>
+            <div id="intersectionsDiv"></div>
           </div>
         </div>
       </div>

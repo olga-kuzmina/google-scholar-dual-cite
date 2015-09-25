@@ -14,5 +14,9 @@
 }
 
 .paperTitle {
-    min-height: 40px;
+    min-height: 100px;
+}
+
+.grey-span {
+    color: grey;
 }
