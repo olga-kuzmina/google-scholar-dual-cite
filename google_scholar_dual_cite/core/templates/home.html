@@ -18,7 +18,27 @@
       $('#findBtn').html('Find!');
     }
 
+    function isPaperFieldsValid(){
+      var valid = true;
+      if (!G_SCHOLAR.PAPER_FIRST_ID){
+        $('#firstInputDiv').addClass('has-error');
+        valid = false;
+      }else{
+        $('#firstInputDiv').removeClass('has-error');
+      }
+      if (!G_SCHOLAR.PAPER_SECOND_ID){
+        $('#secondInputDiv').addClass('has-error');
+        valid = false;
+      }else{
+        $('#secondInputDiv').removeClass('has-error');
+      }
+      return valid;
+    }
+
     function findBntClick(){
+      if (!isPaperFieldsValid()){
+        return;
+      };
       enableFindBtnLoading();
       getCites();
     }
@@ -179,10 +199,10 @@
 
             <form id="firstPaperForm" class="form-horizontal" method="GET" action="api/papers">
             <fieldset>
-              <div class="form-group">
+              <div class="form-group" id="firstInputDiv">
                 <label class="control-label">Paper №1</label>
                 <div class="input-group">
-                  <input type="text" class="form-control" id="firstPaperInput", name="phrase">
+                  <input type="text" class="form-control" id="firstPaperInput" name="phrase">
                   <span class="input-group-btn">
                     <button class="btn btn-primary" type="submit">Submit</button>
                   </span>
@@ -194,10 +214,10 @@
 
           <form id="secondPaperForm" class="form-horizontal" method="GET" action="api/papers">
             <fieldset>
-              <div class="form-group">
+              <div class="form-group" id="secondInputDiv">
                 <label class="control-label">Paper №2</label>
                 <div class="input-group">
-                  <input type="text" class="form-control" id="secondPaperInput", name="phrase">
+                  <input type="text" class="form-control" id="secondPaperInput" name="phrase">
                   <span class="input-group-btn">
                     <button class="btn btn-primary" type="submits"> Submit</button>
                   </span>
