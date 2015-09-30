@@ -1,3 +1,4 @@
 *.pyc
-settings.py
 .idea/
+myenv
+staticfiles
